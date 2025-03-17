@@ -20,3 +20,12 @@ One key insight I gained was the importance of the Content-Length header in the 
 I implemented conditional response logic in the handle_connection method to determine the appropriate response based on the request path. If the request line from the browser matches 'GET / HTTP/1.1', the server responds with a 200 OK status and serves hello.html. For any other path (e.g., /bad), it returns a 404 NOT FOUND status along with a custom 404.html error page.
 
 In this implementation, only the root path / is considered valid, while any other URI results in a not-found response. To improve code maintainability, refactoring was introduced in the tutorial, breaking the logic into smaller, reusable components. This restructuring enhances readability and makes it easier to scale the web server in the future.
+
+## Commit 4 Reflection Notes
+
+To simulate a performance bottleneck, I added a /sleep route to the web server. When accessed, this route triggers a thread::sleep() call, causing the server to pause for 10 seconds before responding. This experiment demonstrated how a single-threaded server handles delays and high processing loads.
+
+I noticed that while /sleep was running, the server became unresponsive to all other requests. Even attempting to load the normal / route in a different browser tab resulted in a delay until the /sleep request completed. This highlighted the limitations of a single-threaded architecture, which is not scalable.
+
+Through this, I gained a deeper understanding of how real-world web servers handle concurrency. To prevent slow requests from blocking others, we need multithreading or asynchronous processing, ensuring better performance and responsiveness.
+
