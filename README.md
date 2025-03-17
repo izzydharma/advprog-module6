@@ -29,3 +29,13 @@ I noticed that while /sleep was running, the server became unresponsive to all o
 
 Through this, I gained a deeper understanding of how real-world web servers handle concurrency. To prevent slow requests from blocking others, we need multithreading or asynchronous processing, ensuring better performance and responsiveness.
 
+## Commit 5 Reflection Notes
+
+To enhance server performance, we introduced a ThreadPool, enabling the server to handle multiple incoming connections simultaneously. Instead of spawning a new thread for each request, we initialized a fixed number of worker threads—four in this case—using ThreadPool::new(4). These threads remain active and are efficiently reused for handling requests.
+
+Within the main loop, we assigned tasks to the thread pool using pool.execute. This approach is similar to thread::spawn() in Rust, where a closure is passed for execution. However, rather than continuously creating new threads, the thread pool distributes tasks among the pre-initialized worker threads, improving efficiency.
+
+For the thread count parameter in ThreadPool::new(), we used the usize type, which represents non-negative whole numbers. Since thread counts cannot be negative, usize is a natural choice, aligning well with how we manage worker threads in a vector.
+
+In the execute method, we defined the closure type using FnOnce(), ensuring that each closure is executed only once. The parentheses after FnOnce indicate that the closure takes no arguments and returns nothing (()), making it functionally equivalent to a standard parameterless function.
+
